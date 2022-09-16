@@ -1,5 +1,5 @@
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
-import {fetchNews} from "./newsApi";
+import {fetchNews, FetchOptions, loadLatestStories} from "./newsApi";
 import {NewsRootState} from "../../app/store";
 /*
 * {
@@ -30,17 +30,28 @@ export interface NewsArticle {
 interface NewsState {
     list: NewsArticle[];
     status: 'busy' | 'complete' | 'rejected' | 'initial';
+    allStories: number[];
 }
 
 const initialState: NewsState = {
     list: [],
     status: 'complete',
+    allStories: [],
 }
 
 export const getNewsAsync = createAsyncThunk(
     'news/fetchNews',
-    async (startFrom: number) => {
-        const response = await fetchNews({storiesPerPage: 12, startFrom});
+    async (options: FetchOptions) => {
+
+        const response = await fetchNews({latestStories: options.latestStories, startFrom: options.startFrom});
+        return {data: response};
+    }
+)
+
+export const loadAllLatestAsync = createAsyncThunk(
+    'news/loadStories',
+    async () => {
+        const response = await loadLatestStories();
         return {data: response};
     }
 )
@@ -51,14 +62,21 @@ export const newsSlice = createSlice({
     reducers: {},
     extraReducers: (builder) => {
         builder
-            .addCase(getNewsAsync.fulfilled, (state, action) => {
+            .addCase(loadAllLatestAsync.fulfilled, (state, action) => {
                 state.status = 'complete';
-                state.list = action.payload.data
+                state.allStories = action.payload.data
             })
-            .addCase(getNewsAsync.pending, (state, action) => {
+            .addCase(loadAllLatestAsync.pending, (state) => {
                 state.status = 'busy';
             })
-            .addCase(getNewsAsync.rejected, (state, action) => {
+            .addCase(getNewsAsync.fulfilled, (state, action) => {
+                state.status = 'complete';
+                state.list = [...state.list, ...action.payload.data]
+            })
+            .addCase(getNewsAsync.pending, (state) => {
+                state.status = 'busy';
+            })
+            .addCase(getNewsAsync.rejected, (state) => {
                 state.status = 'rejected';
             })
     }

@@ -12,6 +12,6 @@ export const NewsList: FC<NewsListProps> = ({list}) => {
 
     console.log('render | NewsList');
     return <List spacing='26px'>
-        {list.map((d, i) => <NewsItem isLoading={isLoading} index={i + 1} article={d} key={d.title} />)}
+        {list.map((d, i) => <NewsItem isLoading={isLoading} index={i + 1} article={d} key={d.title + i} />)}
     </List>
 }

@@ -12,6 +12,7 @@ import relativeTime from 'dayjs/plugin/relativeTime';
 dayjs.extend(relativeTime);
 
 const formatTimeStamp = (time: number) => dayjs.unix(time + 1000).fromNow();
+
 interface NewsItemProps {
     article: NewsArticle;
     index: number;
