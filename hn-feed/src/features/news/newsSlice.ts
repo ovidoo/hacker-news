@@ -24,7 +24,7 @@ export interface NewsArticle {
     id: number;
     by: string;
     descendants: number;
-    saved?: boolean;
+    saved: boolean;
 }
 
 interface NewsState {

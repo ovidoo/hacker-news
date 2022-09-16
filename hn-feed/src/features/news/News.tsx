@@ -1,20 +1,30 @@
 import {FC} from "react";
-import {Provider} from "react-redux";
 import {useNewsDispatch, useNewsSelector} from "../../app/hooks";
 import {getNewsAsync, isLoadingSelector} from "./newsSlice";
-import {Box, Button, Divider, Grid, GridItem, Progress, StackDivider, VStack} from "@chakra-ui/react";
+import {Button, Center, Divider, Progress, Text} from "@chakra-ui/react";
 import {NewsList} from "../../components/NewsList/NewsList";
-import {theme} from "../../styles/theme";
+
+import * as Styles from './News.styles';
+import {Menu} from "../../components/Menu/Menu";
 
 export const News: FC = () => {
     const isLoading = useNewsSelector(isLoadingSelector);
     const newsList = useNewsSelector(state => state.news.list);
     const dispatch = useNewsDispatch();
-    return <main>
-        <Progress height='4px' colorScheme='orange' value={100} isIndeterminate={isLoading}/>
-        <h1>Hacker News</h1>
-        <NewsList list={newsList} />
-        <Divider />
-        <Button onClick={() => dispatch(getNewsAsync())}>show more</Button>
-    </main>
+    return <div>
+        <Progress height='4px' colorScheme='brand' value={100} isIndeterminate={isLoading}/>
+        <Styles.FeedWrapper>
+            <Styles.HeaderWrapper>
+                <Text fontSize={24} fontWeight='extrabold'>Hacker News</Text>
+                <Menu/>
+            </Styles.HeaderWrapper>
+            <NewsList list={newsList}/>
+            <Button colorScheme='brand' onClick={() => dispatch(getNewsAsync())}>show more</Button>
+            <Divider mt={5} mb={5} h='2px' bg='brand.1'/>
+        </Styles.FeedWrapper>
+        <Styles.FooterWrapper mb={5}>
+            <Text fontSize={20} fontWeight='bold'>Hacker News</Text>
+            <Menu/>
+        </Styles.FooterWrapper>
+    </div>
 }
