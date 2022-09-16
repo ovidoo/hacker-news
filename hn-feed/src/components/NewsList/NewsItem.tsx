@@ -6,15 +6,19 @@ import * as Styles from './NewsList.styles';
 import {SkeletonArticle} from "./SkeletonArticle";
 import {AiFillStar, AiOutlineStar} from "react-icons/ai";
 import {ArticleDetails} from "./ArticleProperty";
+import dayjs from "dayjs";
+import relativeTime from 'dayjs/plugin/relativeTime';
 
+dayjs.extend(relativeTime);
+
+const formatTimeStamp = (time: number) => dayjs.unix(time + 1000).fromNow();
 interface NewsItemProps {
     article: NewsArticle;
     index: number;
     isLoading: boolean;
 }
-
 export const NewsItem: FC<NewsItemProps> = ({index, article, isLoading}) => {
-    const {title, saved, url, score, by, descendants} = article;
+    const {title, saved, url, score, by, descendants, time} = article;
 
     return <Styles.ItemWrapper>
         <SkeletonArticle isLoading={isLoading}>
@@ -28,6 +32,7 @@ export const NewsItem: FC<NewsItemProps> = ({index, article, isLoading}) => {
                 <Styles.SecondRowWrapper>
                     <ArticleDetails>{score} points</ArticleDetails>
                     <ArticleDetails>by {by}</ArticleDetails>
+                    <ArticleDetails>{formatTimeStamp(time)}</ArticleDetails>
                     <ArticleDetails>|</ArticleDetails>
                     <ArticleDetails>comments {descendants}</ArticleDetails>
                     <ArticleDetails>|</ArticleDetails>

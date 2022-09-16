@@ -19,7 +19,7 @@ export interface NewsArticle {
     type: string;
     url: string;
     score: number;
-    time: Date;
+    time: number;
     kids: number[];
     id: number;
     by: string;
@@ -39,8 +39,8 @@ const initialState: NewsState = {
 
 export const getNewsAsync = createAsyncThunk(
     'news/fetchNews',
-    async () => {
-        const response = await fetchNews();
+    async (startFrom: number) => {
+        const response = await fetchNews({storiesPerPage: 12, startFrom});
         return {data: response};
     }
 )

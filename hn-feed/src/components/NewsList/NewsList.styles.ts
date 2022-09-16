@@ -18,6 +18,9 @@ export const ContentWrapper = styled.div`
 export const FirstRowWrapper = styled.div`
   display: flex;
   align-items: center;
+  justify-content: start;
+  justify-items: start;
+  text-align: left;
   gap: 12px;
 `
 

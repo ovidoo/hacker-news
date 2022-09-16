@@ -9,6 +9,8 @@ interface NewsListProps {
 }
 export const NewsList: FC<NewsListProps> = ({list}) => {
     const isLoading = useNewsSelector(isLoadingSelector);
+
+    console.log('render | NewsList');
     return <List spacing='26px'>
         {list.map((d, i) => <NewsItem isLoading={isLoading} index={i + 1} article={d} key={d.title} />)}
     </List>
