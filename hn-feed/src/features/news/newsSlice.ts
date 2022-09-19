@@ -1,6 +1,9 @@
-import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
+import {createAsyncThunk, createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {fetchNews, FetchOptions, loadLatestStories} from "./newsApi";
 import {NewsRootState} from "../../app/store";
+import {useNewsSelector} from "../../app/hooks";
+import {keyBy, values} from "lodash";
+
 /*
 * {
   "by" : "jensgk",
@@ -31,12 +34,14 @@ interface NewsState {
     list: NewsArticle[];
     status: 'busy' | 'complete' | 'rejected' | 'initial';
     allStories: number[];
+    articlesMap: Record<number, NewsArticle>;
 }
 
 const initialState: NewsState = {
     list: [],
-    status: 'complete',
+    status: 'initial',
     allStories: [],
+    articlesMap: {},
 }
 
 export const getNewsAsync = createAsyncThunk(
@@ -52,26 +57,47 @@ export const loadAllLatestAsync = createAsyncThunk(
     'news/loadStories',
     async () => {
         const response = await loadLatestStories();
-        return {data: response};
+        const latestNews = await fetchNews({latestStories: response, startFrom: 0});
+        return {allStories: response, list: latestNews};
     }
 )
 
 export const newsSlice = createSlice({
     name: 'news',
     initialState,
-    reducers: {},
+    reducers: {
+        saveById: (state, action: PayloadAction<NewsArticle>) => {
+            const id = action.payload.id;
+            console.log('saveById | newsSlice | id=', id);
+            let {articlesMap} = state;
+            const article = articlesMap[id];
+            const isSaved = article.saved;
+            const newArticle = {...article, saved: !isSaved};
+            state.articlesMap = {
+                ...articlesMap,
+                [id]: newArticle,
+            };
+        },
+    },
     extraReducers: (builder) => {
         builder
             .addCase(loadAllLatestAsync.fulfilled, (state, action) => {
+                const { allStories, list } = action.payload;
+                state.allStories = allStories;
+                state.list = list;
+                // state.articlesMap = new Map(state.list.map(d => [d.id, d]));
+                state.articlesMap = keyBy(list, 'id');
                 state.status = 'complete';
-                state.allStories = action.payload.data
             })
             .addCase(loadAllLatestAsync.pending, (state) => {
                 state.status = 'busy';
             })
             .addCase(getNewsAsync.fulfilled, (state, action) => {
+                const { list, status } = state;
+                state.list = status === 'initial' ? action.payload.data : [...list, ...action.payload.data];
+                // state.articlesMap = new Map(state.list.map(d => [d.id, d]));
+                state.articlesMap = keyBy(state.list, 'id');
                 state.status = 'complete';
-                state.list = [...state.list, ...action.payload.data]
             })
             .addCase(getNewsAsync.pending, (state) => {
                 state.status = 'busy';
@@ -86,6 +112,8 @@ export const isLoadingSelector = (state: NewsRootState) => {
     return state.news.status === 'busy';
 };
 
-export const {} = newsSlice.actions
+export const storiesListSelector = (state: NewsRootState): NewsArticle[] => values(state.news.articlesMap);
+
+export const {saveById} = newsSlice.actions
 
 export default newsSlice.reducer;

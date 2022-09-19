@@ -10,16 +10,15 @@ const baseApiPath = 'https://hacker-news.firebaseio.com/';
 const apiVersion = 'v0/';
 const params = 'print=pretty';
 const storyUrl = (id: number) => `${baseApiPath}${apiVersion}item/${id}.json?${params}`;
-const allStoriesUrl = `${baseApiPath}${apiVersion}topstories.json?${params}`
-const defaultFetchOptions: FetchOptions = {latestStories: [], startFrom: 0, storiesPerPage: 12};
+const allStoriesUrl = `${baseApiPath}${apiVersion}topstories.json?${params}`;
 
 export async function loadLatestStories(): Promise<number[]> {
     return await (await fetch(allStoriesUrl)).json() as number[];
 }
-export async function fetchNews(options: FetchOptions = defaultFetchOptions): Promise<NewsArticle[]> {
-    let {latestStories, storiesPerPage = 12, startFrom = 0} = options;
+export async function fetchNews(options: FetchOptions): Promise<NewsArticle[]> {
+    let { latestStories, storiesPerPage = 12, startFrom = 0 } = options;
     const data = latestStories.slice(startFrom, startFrom + storiesPerPage);
-    console.log('data length', data);
+    console.log('fetchNews | data=', data);
     const allNews = await Promise.all(data.map(async (d) => await (await fetchStory(d)).json()))
     return allNews;
 }

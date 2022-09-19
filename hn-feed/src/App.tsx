@@ -10,13 +10,14 @@ import {counterStore} from "./app/counterStore";
 import theme from "./styles/theme";
 
 
-function App() {
-    const [page, setPage] = useState('');
+const App = () => {
+    console.log('render | App');
     return (
         <ChakraProvider theme={theme}>
             <div className="App">
-                {page === 'counter' && <Provider store={counterStore}><CounterApp/></Provider>}
-                {page === '' && <Provider store={store}><News/></Provider>}
+                <Provider store={store}>
+                    <News />
+                </Provider>
             </div>
         </ChakraProvider>
     );
