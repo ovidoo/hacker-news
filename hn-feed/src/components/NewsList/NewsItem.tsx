@@ -7,7 +7,7 @@ import {SkeletonArticle} from "./SkeletonArticle";
 import {AiFillStar, AiOutlineStar} from "react-icons/ai";
 import {ArticleDetails} from "./ArticleProperty";
 import {formatTimeStamp, urlExtractor} from "../../app/utils";
-import {useCounterDispatch} from "../../app/hooks";
+import {useNewsDispatch} from "../../app/hooks";
 
 interface NewsItemProps {
     article: NewsArticle;
@@ -15,7 +15,7 @@ interface NewsItemProps {
     isLoading: boolean;
 }
 export const NewsItem: FC<NewsItemProps> = ({index, article, isLoading}) => {
-  const dispatch = useCounterDispatch();
+  const dispatch = useNewsDispatch();
     const {title, saved, url, score, by, descendants, time} = article;
 
     const formattedUrl = urlExtractor(url) && urlExtractor(url)[4] ? urlExtractor(url)[4] : url;

@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
 import {Icon, ListItem} from "@chakra-ui/react";
-import theme from "../../styles/theme";
+import {theme} from "../../styles/theme";
 
 export const ItemWrapper = styled(ListItem)`
   display: grid;

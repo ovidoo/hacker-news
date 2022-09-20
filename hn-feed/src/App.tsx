@@ -1,16 +1,15 @@
-import React, {useState} from 'react';
+import {FC} from "react";
+import {Provider} from 'react-redux';
 import {ChakraProvider} from '@chakra-ui/react'
 
-import './App.css';
-import {CounterApp} from "./features/counter/CounterApp";
 import {News} from "./features/news/News";
 import {store} from "./app/store";
-import {Provider} from 'react-redux';
-import {counterStore} from "./app/counterStore";
-import theme from "./styles/theme";
+import {theme} from "./styles/theme";
+
+import './App.css';
 
 
-const App = () => {
+const App: FC = () => {
     console.log('render | App');
     return (
         <ChakraProvider theme={theme}>

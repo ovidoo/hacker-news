@@ -1,4 +1,6 @@
 import {NewsArticle} from "./newsSlice";
+import {getStoredState} from "../../app/utils";
+import {keys, values} from "lodash";
 
 export interface FetchOptions {
     latestStories: number[];
@@ -19,10 +21,12 @@ export async function loadLatestStories(): Promise<number[]> {
 }
 export async function fetchNews(options: FetchOptions): Promise<NewsArticle[]> {
     let { latestStories, storiesPerPage = 12, startFrom = 0 } = options;
-    const data = latestStories.slice(startFrom, startFrom + storiesPerPage);
+    const savedStories = values(getStoredState(true)?.articlesMap);
+    const savedStoriesKeys: number[] = savedStories.map(d => d.id);
+    const data = latestStories.slice(startFrom, startFrom + storiesPerPage).filter(d => !savedStoriesKeys.includes(d));
     const allNews = await Promise.all(data.map(async (d) => await (await fetchStory(d)).json()))
     console.log('fetchNews | data=', data);
-    return allNews;
+    return [...savedStories, ...allNews];
 }
 
 export async function fetchStory(id: number): Promise<any> {

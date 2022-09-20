@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
 import {Box, Center} from "@chakra-ui/react";
-import theme from "../../styles/theme";
+import {theme} from "../../styles/theme";
 
 export const Logo = styled.div`
   background-color: ${() => theme.colors.brand['1']};

@@ -1,23 +1,9 @@
 import {createAsyncThunk, createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {fetchNews, FetchOptions, loadLatestStories} from "./newsApi";
 import {NewsRootState} from "../../app/store";
-import {useNewsSelector} from "../../app/hooks";
-import {keyBy, values} from "lodash";
-import {Pages} from "../../app/utils";
+import {keyBy, keys, values} from "lodash";
+import {getStoredState, mapArticles, Pages} from "../../app/utils";
 
-/*
-* {
-  "by" : "jensgk",
-  "descendants" : 215,
-  "id" : 32830916,
-  "kids" : [ 32832662, 32834838, 32833802, 32831763, 32832555, 32831741, 32832006, 32834987, 32835007, 32832430, 32831972, 32832952, 32834412, 32833179, 32832486, 32833710, 32832184, 32832523, 32832520, 32832685, 32832610, 32834855, 32834063, 32832607, 32832544, 32832499, 32832622, 32833667, 32833007, 32832235, 32832549, 32832675, 32832269 ],
-  "score" : 430,
-  "time" : 1663107682,
-  "title" : "“Secrets” about the consumer audio business you may find interesting",
-  "type" : "story",
-  "url" : "https://www.audiosciencereview.com/forum/index.php?threads%2Fsecrets-about-the-consumer-audio-business-you-may-find-interesting.37344%2F"
-}
-* */
 export interface NewsArticle {
     title: string;
     type: string;
@@ -29,10 +15,10 @@ export interface NewsArticle {
     by: string;
     descendants: number;
     saved: boolean;
+    order: number;
 }
 
-interface NewsState {
-    list: NewsArticle[];
+export interface NewsState {
     status: 'busy' | 'complete' | 'rejected' | 'initial';
     allStories: number[];
     articlesMap: Record<number, NewsArticle>;
@@ -41,7 +27,6 @@ interface NewsState {
 }
 
 const initialState: NewsState = {
-    list: [],
     status: 'initial',
     allStories: [],
     articlesMap: {},
@@ -78,7 +63,7 @@ export const newsSlice = createSlice({
             state.darkMode = action.payload;
         },
         saveById: (state, action: PayloadAction<NewsArticle>) => {
-            const id = action.payload.id;
+            const { id } = action.payload;
             console.log('saveById | newsSlice | id=', id);
             let {articlesMap} = state;
             const article = articlesMap[id];
@@ -95,19 +80,19 @@ export const newsSlice = createSlice({
             .addCase(loadAllLatestAsync.fulfilled, (state, action) => {
                 const { allStories, list } = action.payload;
                 state.allStories = allStories;
-                state.list = list;
-                // state.articlesMap = new Map(state.list.map(d => [d.id, d]));
-                state.articlesMap = keyBy(list, 'id');
+                state.articlesMap = keyBy(mapArticles(list), 'id');
                 state.status = 'complete';
             })
             .addCase(loadAllLatestAsync.pending, (state) => {
                 state.status = 'busy';
             })
             .addCase(getNewsAsync.fulfilled, (state, action) => {
-                const { list, status } = state;
-                state.list = status === 'initial' ? action.payload.data : [...list, ...action.payload.data];
-                // state.articlesMap = new Map(state.list.map(d => [d.id, d]));
-                state.articlesMap = keyBy(state.list, 'id');
+                const { articlesMap } = state;
+                const existingArticlesLength = keys(articlesMap).length;
+                state.articlesMap = {
+                    ...articlesMap,
+                    ...keyBy(mapArticles(action.payload.data, existingArticlesLength), 'id')
+                };
                 state.status = 'complete';
             })
             .addCase(getNewsAsync.pending, (state) => {
@@ -125,8 +110,9 @@ export const currentPageSelector = (state: NewsRootState) => state.news.currentP
 
 export const isDarkModeSelector = (state: NewsRootState) => state.news.darkMode;
 
-export const storiesListSelector = (state: NewsRootState): NewsArticle[] => values(state.news.articlesMap);
+export const storiesListSelector = (state: NewsRootState): NewsArticle[] => values(state.news.articlesMap)
+    .sort((a, b) => a.order - b.order);
 
-export const {saveById, setCurrentPage, setDarkMode} = newsSlice.actions
+export const {saveById, setCurrentPage, setDarkMode} = newsSlice.actions;
 
 export default newsSlice.reducer;

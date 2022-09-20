@@ -49,8 +49,6 @@ const Button: ComponentStyleConfig = {
 }
 
 // 3. extend the theme
-const theme = extendTheme({config, colors: customColors,  components: {
+export const theme = extendTheme({config, colors: customColors,  components: {
     Button,
   },})
-
-export default theme

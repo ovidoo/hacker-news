@@ -5,15 +5,17 @@ import {
     getNewsAsync,
     isLoadingSelector,
     loadAllLatestAsync,
+    setCurrentPage,
     storiesListSelector
 } from "./newsSlice";
-import {Box, Button, Center, Container, Divider, Flex, Progress, Spacer, Text, Wrap, WrapItem} from "@chakra-ui/react";
+import {Button, Divider, Flex, Progress, Spacer, Text} from "@chakra-ui/react";
 import {NewsList} from "../../components/NewsList/NewsList";
 
 import * as Styles from './News.styles';
 import {Menu} from "../../components/Menu/Menu";
 import {Header} from "../../components/Header/Header";
-import {Pages} from "../../app/utils";
+import {handleStoreChange, Pages} from "../../app/utils";
+import {store} from "../../app/store";
 
 export const News: FC = () => {
     const isLoading = useNewsSelector(isLoadingSelector);
@@ -29,6 +31,9 @@ export const News: FC = () => {
         if (!allStories.length) {
             dispatch(loadAllLatestAsync());
         }
+        const unsubscribe = store.subscribe(() => handleStoreChange(store));
+
+        return () => unsubscribe();
     }, []);
 
     return <div>
@@ -39,7 +44,10 @@ export const News: FC = () => {
             <Spacer mt={5}/>
             <Flex ml={10} justifyItems='start'>
                 <Button colorScheme='brand'
-                        onClick={() => dispatch(getNewsAsync({latestStories: allStories, startFrom: newsList.length}))}>
+                        onClick={() => {
+                            dispatch(getNewsAsync({latestStories: allStories, startFrom: newsList.length}))
+                            currentPage !== Pages.latest && dispatch(setCurrentPage(Pages.latest));
+                        }}>
                     show more
                 </Button>
             </Flex>
