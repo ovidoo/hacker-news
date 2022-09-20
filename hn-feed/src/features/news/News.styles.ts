@@ -27,4 +27,14 @@ export const FooterWrapper = styled(Box)`
 `
 export const MenuWrapper = styled(Center)`
   gap: 10px;
+
+  .selected {
+    color: ${() => theme.colors.brand['1']};
+  }
+
+  button {
+    &:hover {
+      color: ${() => theme.colors.brand['1']};
+    }
+  }
 `

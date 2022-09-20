@@ -1,17 +1,26 @@
 import {FC, useEffect} from "react";
 import {useNewsDispatch, useNewsSelector} from "../../app/hooks";
-import {getNewsAsync, isLoadingSelector, loadAllLatestAsync, storiesListSelector} from "./newsSlice";
+import {
+    currentPageSelector,
+    getNewsAsync,
+    isLoadingSelector,
+    loadAllLatestAsync,
+    storiesListSelector
+} from "./newsSlice";
 import {Box, Button, Center, Container, Divider, Flex, Progress, Spacer, Text, Wrap, WrapItem} from "@chakra-ui/react";
 import {NewsList} from "../../components/NewsList/NewsList";
 
 import * as Styles from './News.styles';
 import {Menu} from "../../components/Menu/Menu";
 import {Header} from "../../components/Header/Header";
+import {Pages} from "../../app/utils";
 
 export const News: FC = () => {
     const isLoading = useNewsSelector(isLoadingSelector);
     const newsList = useNewsSelector(storiesListSelector);
     const allStories = useNewsSelector(state => state.news.allStories);
+    const currentPage = useNewsSelector(currentPageSelector);
+    const isStarred = currentPage === Pages.starred;
     const dispatch = useNewsDispatch();
 
     console.log('render | News');
@@ -26,7 +35,7 @@ export const News: FC = () => {
         <Progress height='4px' colorScheme='brand' value={100} isIndeterminate={isLoading}/>
         <Styles.FeedWrapper>
             <Header/>
-            <NewsList isLoading={isLoading} list={newsList}/>
+            <NewsList isLoading={isLoading} list={isStarred ? newsList.filter(d => d.saved) : newsList}/>
             <Spacer mt={5}/>
             <Flex ml={10} justifyItems='start'>
                 <Button colorScheme='brand'

@@ -6,3 +6,7 @@ dayjs.extend(relativeTime);
 const regexPattern = /^(([^:\/?#]+):)?(\/\/([^\/?#]*))?([^?#]*)(\?([^#]*))?(#(.*))?/;
 export const urlExtractor = (url: string) => new RegExp(regexPattern).exec(url) as string[];
 export const formatTimeStamp = (time: number) => dayjs.unix(time + 1000).fromNow();
+export enum Pages {
+    latest = 'latest',
+    starred = 'starred',
+}

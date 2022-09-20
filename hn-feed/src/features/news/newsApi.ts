@@ -13,13 +13,15 @@ const storyUrl = (id: number) => `${baseApiPath}${apiVersion}item/${id}.json?${p
 const allStoriesUrl = `${baseApiPath}${apiVersion}topstories.json?${params}`;
 
 export async function loadLatestStories(): Promise<number[]> {
-    return await (await fetch(allStoriesUrl)).json() as number[];
+    const data = await (await fetch(allStoriesUrl)).json() as number[];
+    console.log('loadLatestStories | data=', data);
+    return data;
 }
 export async function fetchNews(options: FetchOptions): Promise<NewsArticle[]> {
     let { latestStories, storiesPerPage = 12, startFrom = 0 } = options;
     const data = latestStories.slice(startFrom, startFrom + storiesPerPage);
-    console.log('fetchNews | data=', data);
     const allNews = await Promise.all(data.map(async (d) => await (await fetchStory(d)).json()))
+    console.log('fetchNews | data=', data);
     return allNews;
 }
 

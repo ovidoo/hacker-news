@@ -7,7 +7,7 @@ import type { ComponentStyleConfig } from '@chakra-ui/theme'
 
 // 2. Add your color mode config
 const config: ThemeConfig = {
-    initialColorMode: 'light',
+    initialColorMode: 'dark',
     useSystemColorMode: false,
 }
 

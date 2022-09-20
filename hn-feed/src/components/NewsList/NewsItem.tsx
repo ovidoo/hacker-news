@@ -9,7 +9,6 @@ import {ArticleDetails} from "./ArticleProperty";
 import {formatTimeStamp, urlExtractor} from "../../app/utils";
 import {useCounterDispatch} from "../../app/hooks";
 
-
 interface NewsItemProps {
     article: NewsArticle;
     index: number;

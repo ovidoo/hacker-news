@@ -3,6 +3,7 @@ import {fetchNews, FetchOptions, loadLatestStories} from "./newsApi";
 import {NewsRootState} from "../../app/store";
 import {useNewsSelector} from "../../app/hooks";
 import {keyBy, values} from "lodash";
+import {Pages} from "../../app/utils";
 
 /*
 * {
@@ -35,6 +36,8 @@ interface NewsState {
     status: 'busy' | 'complete' | 'rejected' | 'initial';
     allStories: number[];
     articlesMap: Record<number, NewsArticle>;
+    currentPage: Pages;
+    darkMode: boolean;
 }
 
 const initialState: NewsState = {
@@ -42,6 +45,8 @@ const initialState: NewsState = {
     status: 'initial',
     allStories: [],
     articlesMap: {},
+    currentPage: Pages.latest,
+    darkMode: false,
 }
 
 export const getNewsAsync = createAsyncThunk(
@@ -66,6 +71,12 @@ export const newsSlice = createSlice({
     name: 'news',
     initialState,
     reducers: {
+        setCurrentPage: (state, action: PayloadAction<Pages>) => {
+            state.currentPage = action.payload;
+        },
+        setDarkMode: (state, action: PayloadAction<boolean>) => {
+            state.darkMode = action.payload;
+        },
         saveById: (state, action: PayloadAction<NewsArticle>) => {
             const id = action.payload.id;
             console.log('saveById | newsSlice | id=', id);
@@ -108,12 +119,14 @@ export const newsSlice = createSlice({
     }
 })
 
-export const isLoadingSelector = (state: NewsRootState) => {
-    return state.news.status === 'busy';
-};
+export const isLoadingSelector = (state: NewsRootState) => state.news.status === 'busy';
+
+export const currentPageSelector = (state: NewsRootState) => state.news.currentPage;
+
+export const isDarkModeSelector = (state: NewsRootState) => state.news.darkMode;
 
 export const storiesListSelector = (state: NewsRootState): NewsArticle[] => values(state.news.articlesMap);
 
-export const {saveById} = newsSlice.actions
+export const {saveById, setCurrentPage, setDarkMode} = newsSlice.actions
 
 export default newsSlice.reducer;
