@@ -1,7 +1,8 @@
 import {FC, PropsWithChildren} from "react";
-import {Text} from '@chakra-ui/react'
+import {Text, useColorMode} from '@chakra-ui/react'
 
 export const ArticleDetails: FC<PropsWithChildren> = ({children}) => {
-    return <Text color='blackAlpha.500' fontWeight='400'
+    const { colorMode } = useColorMode();
+    return <Text color={colorMode === 'light' ? 'blackAlpha.500' : 'whiteAlpha.500'} fontWeight='400'
                  fontSize={10}>{children}</Text>
 }

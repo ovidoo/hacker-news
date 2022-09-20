@@ -1,5 +1,5 @@
 import * as Styles from "../../features/news/News.styles";
-import {Box, Button, Flex, Spacer, Text, Wrap} from "@chakra-ui/react";
+import {Box, Button, Flex, Spacer, Text, useColorMode, Wrap} from "@chakra-ui/react";
 import {Menu} from "../Menu/Menu";
 import {FC} from "react";
 import {MdDarkMode} from "react-icons/md";
@@ -9,6 +9,7 @@ import {isDarkModeSelector, setDarkMode} from "../../features/news/newsSlice";
 
 export const Header: FC = () => {
     const dispatch = useNewsDispatch();
+    const {toggleColorMode} = useColorMode();
     const isDarkMode = useNewsSelector(isDarkModeSelector);
     console.log('render | Header');
     return <Flex>
@@ -23,7 +24,10 @@ export const Header: FC = () => {
             </Styles.HeaderWrapper>
         </Box>
         <Spacer/>
-        <Button variant='unstyled' p={5} onClick={() => dispatch(setDarkMode(!isDarkMode))}>
+        <Button variant='unstyled' p={5} onClick={() => {
+            dispatch(setDarkMode(!isDarkMode))
+            toggleColorMode();
+        }}>
             {isDarkMode ? <BsSun/> : <MdDarkMode/>}
         </Button>
     </Flex>

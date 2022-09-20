@@ -1,6 +1,6 @@
 import {FC} from "react";
 import {NewsArticle, saveById} from "../../features/news/newsSlice";
-import {Text} from "@chakra-ui/react";
+import {Text, useColorMode} from "@chakra-ui/react";
 
 import * as Styles from './NewsList.styles';
 import {SkeletonArticle} from "./SkeletonArticle";
@@ -15,16 +15,17 @@ interface NewsItemProps {
     isLoading: boolean;
 }
 export const NewsItem: FC<NewsItemProps> = ({index, article, isLoading}) => {
-  const dispatch = useNewsDispatch();
+    const { colorMode } = useColorMode();
+    const dispatch = useNewsDispatch();
     const {title, saved, url, score, by, descendants, time} = article;
 
     const formattedUrl = urlExtractor(url) && urlExtractor(url)[4] ? urlExtractor(url)[4] : url;
     return <Styles.ItemWrapper>
         <SkeletonArticle isLoading={isLoading}>
-            <Text color='blackAlpha.500' fontWeight='400'>{index}.</Text>
+            <Text color={colorMode === 'light' ? 'blackAlpha.500' : 'whiteAlpha.500'} fontWeight='400'>{index}.</Text>
             <Styles.ContentWrapper>
                 <Styles.FirstRowWrapper>
-                    <Text color='black' fontWeight='700'>{title}</Text>
+                    <Text color={colorMode === 'light' ? 'black' : 'white'} fontWeight='700'>{title}</Text>
                     <a href={url} target='_blank' rel="noreferrer">
                         <ArticleDetails>({formattedUrl})</ArticleDetails></a>
                 </Styles.FirstRowWrapper>
