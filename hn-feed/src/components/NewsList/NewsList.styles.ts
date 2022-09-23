@@ -31,16 +31,19 @@ export const SecondRowWrapper = styled.div`
   gap: 5px;
 `
 
-export const StarWrapper = styled.div<{$saved: boolean}>`
-  svg {
-    fill: ${({$saved}) => $saved ? theme.colors.brand['900'] : theme.colors.blackAlpha['500']};
-  }
+export const StarWrapper = styled.div`
 `
 
-export const SavedWrapper = styled.div`
+export const SavedWrapper = styled.div<{$isDark: boolean, $saved: boolean}>`
   display: flex;
   gap: 5px;
   cursor: pointer;
+  
+  svg {
+      fill: ${({$isDark}) => $isDark && theme.colors.whiteAlpha['600']};
+      fill: ${({$isDark}) => !$isDark && theme.colors.blackAlpha['500']};
+      fill: ${({$saved}) => $saved && theme.colors.brand['900']};
+  }
   
   &:hover {
     .chakra-text {

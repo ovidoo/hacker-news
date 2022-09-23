@@ -18,6 +18,16 @@ export interface NewsArticle {
     order: number;
 }
 
+export interface ArticleComment {
+    by: string;
+    id: number;
+    kids: number[];
+    parent: number;
+    text: string;
+    time: number
+    type: "comment"
+}
+
 export interface NewsState {
     status: 'busy' | 'complete' | 'rejected' | 'initial';
     allStories: number[];
@@ -45,10 +55,15 @@ export const getNewsAsync = createAsyncThunk(
 
 export const loadAllLatestAsync = createAsyncThunk(
     'news/loadStories',
-    async () => {
-        const response = await loadLatestStories();
-        const latestNews = await fetchNews({latestStories: response, startFrom: 0});
-        return {allStories: response, list: latestNews};
+    async (status: string) => {
+        console.log('news | loadStories', status);
+        if (status === 'initial') {
+            const response = await loadLatestStories();
+            const latestNews = await fetchNews({latestStories: response, startFrom: 0});
+            return {allStories: response, list: latestNews};
+        } else {
+            return {allStories: [], list: []}
+        }
     }
 )
 
@@ -63,7 +78,7 @@ export const newsSlice = createSlice({
             state.darkMode = action.payload;
         },
         saveById: (state, action: PayloadAction<NewsArticle>) => {
-            const { id } = action.payload;
+            const {id} = action.payload;
             console.log('saveById | newsSlice | id=', id);
             let {articlesMap} = state;
             const article = articlesMap[id];
@@ -78,16 +93,16 @@ export const newsSlice = createSlice({
     extraReducers: (builder) => {
         builder
             .addCase(loadAllLatestAsync.fulfilled, (state, action) => {
-                const { allStories, list } = action.payload;
+                state.status = 'complete';
+                const {allStories, list} = action.payload;
                 state.allStories = allStories;
                 state.articlesMap = keyBy(mapArticles(list), 'id');
-                state.status = 'complete';
             })
             .addCase(loadAllLatestAsync.pending, (state) => {
                 state.status = 'busy';
             })
             .addCase(getNewsAsync.fulfilled, (state, action) => {
-                const { articlesMap } = state;
+                const {articlesMap} = state;
                 const existingArticlesLength = keys(articlesMap).length;
                 state.articlesMap = {
                     ...articlesMap,
@@ -105,6 +120,8 @@ export const newsSlice = createSlice({
 })
 
 export const isLoadingSelector = (state: NewsRootState) => state.news.status === 'busy';
+
+export const statusSelector = (state: NewsRootState) => state.news.status;
 
 export const currentPageSelector = (state: NewsRootState) => state.news.currentPage;
 

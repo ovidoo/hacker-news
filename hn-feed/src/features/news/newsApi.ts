@@ -1,4 +1,4 @@
-import {NewsArticle} from "./newsSlice";
+import {ArticleComment, NewsArticle} from "./newsSlice";
 import {getStoredState} from "../../app/utils";
 import {keys, values} from "lodash";
 

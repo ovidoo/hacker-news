@@ -1,13 +1,13 @@
 import * as Styles from "../../features/news/News.styles";
 import {Box, Button, Flex, Spacer, Text, useColorMode, Wrap} from "@chakra-ui/react";
 import {Menu} from "../Menu/Menu";
-import {FC} from "react";
+import {FC, memo} from "react";
 import {MdDarkMode} from "react-icons/md";
 import {BsSun} from "react-icons/bs";
 import {useNewsDispatch, useNewsSelector} from "../../app/hooks";
 import {isDarkModeSelector, setDarkMode} from "../../features/news/newsSlice";
 
-export const Header: FC = () => {
+const Header: FC = () => {
     const dispatch = useNewsDispatch();
     const {toggleColorMode} = useColorMode();
     const isDarkMode = useNewsSelector(isDarkModeSelector);
@@ -32,3 +32,5 @@ export const Header: FC = () => {
         </Button>
     </Flex>
 }
+
+export default memo(Header);

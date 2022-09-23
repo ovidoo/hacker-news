@@ -2,7 +2,7 @@ import {FC} from "react";
 import {Provider} from 'react-redux';
 import {ChakraProvider} from '@chakra-ui/react'
 
-import {News} from "./features/news/News";
+import News from "./features/news/News";
 import {store} from "./app/store";
 import {theme} from "./styles/theme";
 

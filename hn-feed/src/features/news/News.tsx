@@ -1,10 +1,9 @@
-import {FC, useEffect} from "react";
+import {FC, memo, useEffect} from "react";
 import {useNewsDispatch, useNewsSelector} from "../../app/hooks";
 import {
     currentPageSelector,
     getNewsAsync,
     isLoadingSelector,
-    loadAllLatestAsync,
     setCurrentPage,
     storiesListSelector
 } from "./newsSlice";
@@ -13,11 +12,11 @@ import {NewsList} from "../../components/NewsList/NewsList";
 
 import * as Styles from './News.styles';
 import {Menu} from "../../components/Menu/Menu";
-import {Header} from "../../components/Header/Header";
+import Header from "../../components/Header/Header";
 import {handleStoreChange, Pages} from "../../app/utils";
 import {store} from "../../app/store";
 
-export const News: FC = () => {
+const News: FC = () => {
     const isLoading = useNewsSelector(isLoadingSelector);
     const newsList = useNewsSelector(storiesListSelector);
     const allStories = useNewsSelector(state => state.news.allStories);
@@ -28,9 +27,6 @@ export const News: FC = () => {
     console.log('render | News');
 
     useEffect(() => {
-        if (!allStories.length) {
-            dispatch(loadAllLatestAsync());
-        }
         const unsubscribe = store.subscribe(() => handleStoreChange(store));
 
         return () => unsubscribe();
@@ -59,3 +55,5 @@ export const News: FC = () => {
         </Styles.FooterWrapper>
     </div>
 }
+
+export default memo(News)
