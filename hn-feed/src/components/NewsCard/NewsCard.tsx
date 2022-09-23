@@ -26,7 +26,7 @@ const NewsCard: FC<NewsCardProps> = ({article, children}) => {
             <div onFocus={onToggle} onMouseOver={onToggle}>{children}</div>
         </PopoverTrigger>
         <Portal>
-            <PopoverContent width='40vw' height='40vh'>
+            <PopoverContent opacity={0.8} width='40vw' height='40vh'>
                 <PopoverArrow/>
                 <PopoverCloseButton/>
                 <PopoverHeader>{title}</PopoverHeader>
