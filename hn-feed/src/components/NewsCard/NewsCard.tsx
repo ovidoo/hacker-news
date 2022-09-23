@@ -18,7 +18,7 @@ interface NewsCardProps extends PropsWithChildren<any> {
 }
 
 const NewsCard: FC<NewsCardProps> = ({article, children}) => {
-    const {title, kids, url} = article;
+    const {title, url} = article;
     const { isOpen, onToggle, onClose } = useDisclosure()
 
     return <Popover onClose={onClose} closeOnBlur={true} isOpen={isOpen} closeDelay={500} placement='right-end' trigger='hover'>
@@ -31,8 +31,7 @@ const NewsCard: FC<NewsCardProps> = ({article, children}) => {
                 <PopoverCloseButton/>
                 <PopoverHeader>{title}</PopoverHeader>
                 <PopoverBody overflow='auto'>
-                    {/*<iframe src={url} width='100%' height={300} />*/}
-                    <Comments isOpen={isOpen} kids={kids}/>
+                    <iframe src={url} width='100%' height={300} />
                     <NewsItemMetadata article={article}/>
                 </PopoverBody>
             </PopoverContent>

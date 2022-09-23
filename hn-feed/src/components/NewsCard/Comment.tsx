@@ -13,7 +13,7 @@ const Comment: FC<CommentProps> = memo(({comment}) => {
     const {text, id} = comment;
 
     if(!text) {
-        return <ArticleDetails>No Comment</ArticleDetails>
+        return <></>
     }
 
     return <AccordionItem>
@@ -45,12 +45,13 @@ const Comments: FC<CommentsProps> = ({kids, isOpen= false}) => {
     useEffect(() => {
         fetchComments();
     }, [isOpen])
+
     if(!comments) {
         return <></>;
     }
 
-    return <Accordion defaultIndex={[comments[0].id]} allowMultiple>
-        {comments?.map(d => <Comment key={d.id} comment={d} />)}
+    return <Accordion defaultIndex={[comments[0].id]} allowMultiple style={{display: isOpen ? 'initial' : 'none'}}>
+        {comments.filter(d => !!d.text)?.map(d => <Comment key={d.id} comment={d} />)}
     </Accordion>
 }
 
