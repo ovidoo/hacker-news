@@ -26,10 +26,10 @@ const NewsCard: FC<NewsCardProps> = ({article, children}) => {
             <div onFocus={onToggle} onMouseOver={onToggle}>{children}</div>
         </PopoverTrigger>
         <Portal>
-            <PopoverContent opacity={0.8} width='40vw' height='40vh'>
+            <PopoverContent opacity={0.8} width='50vw' height='60vh'>
                 <PopoverArrow/>
                 <PopoverCloseButton/>
-                <PopoverHeader>{title}</PopoverHeader>
+                <PopoverHeader><a href={url}>{title}</a></PopoverHeader>
                 <PopoverBody overflow='auto'>
                     <iframe src={url} width='100%' height={300} />
                     <NewsItemMetadata article={article}/>
