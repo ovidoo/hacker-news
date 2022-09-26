@@ -26,7 +26,7 @@ const Comment: FC<CommentProps> = memo(({comment}) => {
             <AccordionIcon/>
         </AccordionButton>
         <AccordionPanel>
-            <div dangerouslySetInnerHTML={{__html: text}}/>
+            <div style={{ textAlign: 'left' }} dangerouslySetInnerHTML={{__html: text}}/>
         </AccordionPanel>
         <NewsItemMetadata isComment={true} article={comment as any}/>
         <Box ml={5}>
