@@ -39,13 +39,13 @@ const News: FC = () => {
             <NewsList isLoading={isLoading} list={isStarred ? newsList.filter(d => d.saved) : newsList}/>
             <Spacer mt={5}/>
             <Flex ml={10} justifyItems='start'>
-                <Button colorScheme='brand'
+                {/*<Button colorScheme='brand'
                         onClick={() => {
                             dispatch(getNewsAsync({latestStories: allStories, startFrom: newsList.length}))
                             currentPage !== Pages.latest && dispatch(setCurrentPage(Pages.latest));
                         }}>
                     show more
-                </Button>
+                </Button>*/}
             </Flex>
             <Divider mt={5} mb={5} h='2px' bg='brand.1'/>
         </Styles.FeedWrapper>

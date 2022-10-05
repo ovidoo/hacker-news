@@ -1,5 +1,5 @@
 import {createAsyncThunk, createSlice, PayloadAction} from "@reduxjs/toolkit";
-import {fetchNews, FetchOptions, loadLatestStories} from "./newsApi";
+import {fetchNews, fetchNewsObs, FetchOptions, loadLatestStories} from "./newsApi";
 import {NewsRootState} from "../../app/store";
 import {keyBy, keys, values} from "lodash";
 import {getStoredState, mapArticles, Pages} from "../../app/utils";
@@ -60,6 +60,9 @@ export const loadAllLatestAsync = createAsyncThunk(
         if (status === 'initial') {
             const response = await loadLatestStories();
             const latestNews = await fetchNews({latestStories: response, startFrom: 0});
+            /*const sub = fetchNewsObs({latestStories: response, startFrom: 0})
+                .finally()
+                .subscribe()*/
             return {allStories: response, list: latestNews};
         } else {
             return {allStories: [], list: []}
